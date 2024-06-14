@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-import fastapi
-from fastapi.middleware.cors import CORSMiddleware
+from typing import Annotated
 
-import pydantic
+from fastapi import FastAPI, Form
+from fastapi.middleware.cors import CORSMiddleware
 
 import uvicorn
 
-app = fastapi.FastAPI()
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,14 +16,10 @@ app.add_middleware(
 )
 
 
-class Item(pydantic.BaseModel):
-    content: str
-
-
 # Define a path operation for a POST request
 @app.post("/")
-async def handle_post_item(item: Item):
-    print(item.content)
+async def handle_post_item(content: Annotated[str, Form()] = ""):
+    print(content)
     return {"message": "Success!"}
 
 
