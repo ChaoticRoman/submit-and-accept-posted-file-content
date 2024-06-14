@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Upload and Submit</title>
+<script>
+  // Function to load the file into the text area
+  function loadFile(event) {
+    const input = event.target;
+    const reader = new FileReader();
+    reader.onload = function() {
+      const text = reader.result;
+      document.getElementById('content').value = text;
+    };
+    reader.readAsText(input.files[0]);
+  }
+
+  // Function to handle the form submission
+  function submitForm() {
+    const content = document.getElementById('content').value;
+    fetch('http://localhost:8080', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content: content }),
+    })
+    .then(response => response.text())
+    .then(data => alert('Form submitted successfully!'))
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('Error submitting form');
+    });
+
+    // Prevent form from actually submitting
+    return false;
+  }
+</script>
+</head>
+<body>
+
+<h2>Upload and Submit Content</h2>
+
+<form onsubmit="return submitForm();">
+  <label for="fileInput">Load file:</label>
+  <input type="file" id="fileInput" onchange="loadFile(event)"><br><br>
+  
+  <label for="content">Content:</label><br>
+  <textarea id="content" rows="10" cols="50"></textarea><br><br>
+  
+  <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>
